@@ -54,25 +54,28 @@
       }).addTo(map);
 
       let markers = {};
+
+      user = prompt("Enter your Identity (max 10 character) ", "Anonymous").slice(0, 10);
+
       socket.on("receive-location", (data) => {
         let { id, latitude, longitude } = data;
-        map.setView([latitude, longitude])
+        map.setView([latitude, longitude]);
         console.log(Boolean(markers[id]));
-          if(markers[id]){
-            markers[id].setLatLng([latitude, longitude]);
-           }
-           else{
-            markers[id] = L.marker([latitude, longitude]).addTo(map)
-              .bindPopup(`User ${id}`)
-              .openPopup();
-           }
+        if (markers[id]) {
+          markers[id].setLatLng([latitude, longitude]);
+        } else {
+          markers[id] = L.marker([latitude, longitude])
+            .addTo(map)
 
+            .bindPopup(`${user}`)
+            .openPopup();
+        }
       });
-     
-      socket.on("user-disconnect",(id)=>{
-        map.removeLayer(markers[id])
-        delete markers[id]
-      })
+
+      socket.on("user-disconnect", (id) => {
+        map.removeLayer(markers[id]);
+        delete markers[id];
+      });
     </script>
   </body>
 </html>
